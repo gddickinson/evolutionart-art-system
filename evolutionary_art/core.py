@@ -14,6 +14,15 @@ from deap import base, creator, tools
 
 from evolutionary_art.fitness import evaluate_color_harmony
 
+# Names an ArtisticFunction expression may use (see _generate_subfunction).
+EXPRESSION_NAMES = {"sin": np.sin, "cos": np.cos, "abs": np.abs}
+
+
+def eval_function(function_str, X, Y):
+    """Evaluate an ArtisticFunction expression string on coordinate grids X, Y."""
+    namespace = {"x": X, "y": Y, **EXPRESSION_NAMES}
+    return eval(function_str, {"__builtins__": {}}, namespace)
+
 
 class ArtisticFunction:
     """Generates and mutates mathematical expressions for art."""
@@ -102,13 +111,7 @@ class EvolutionaryArtSystem:
                 valid = True
                 for func in individual:
                     try:
-                        namespace = {
-                            "x": X, "y": Y,
-                            "sin": np.sin, "cos": np.cos, "abs": np.abs,
-                        }
-                        result = eval(
-                            func.function_str, {"__builtins__": {}}, namespace
-                        )
+                        result = eval_function(func.function_str, X, Y)
                         if not np.isfinite(result).all():
                             valid = False
                             break
@@ -130,8 +133,7 @@ class EvolutionaryArtSystem:
 
         for i, func in enumerate(individual):
             try:
-                namespace = {"x": X, "y": Y, "np": np}
-                result = eval(func.function_str, {"__builtins__": {}}, namespace)
+                result = eval_function(func.function_str, X, Y)
                 result = (result - np.min(result)) / (
                     np.max(result) - np.min(result) + 1e-10
                 )
@@ -225,8 +227,7 @@ def save_artwork(individual, filename, width=800, height=800):
     X, Y = np.meshgrid(x, y)
 
     for i, func in enumerate(individual):
-        namespace = {"x": X, "y": Y, "sin": np.sin, "cos": np.cos, "abs": np.abs}
-        result = eval(func.function_str, {"__builtins__": {}}, namespace)
+        result = eval_function(func.function_str, X, Y)
         result = (result - np.min(result)) / (np.max(result) - np.min(result) + 1e-10)
         img[:, :, i] = result
 
