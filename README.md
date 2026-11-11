@@ -66,6 +66,36 @@ art_system.evolve()
 
 Both systems will create an `evolution_output` directory containing generated artwork from each generation.
 
+## Web interface and live site
+
+**Live site:** https://gddickinson.github.io/evolutionart-art-system/ (static GitHub Pages build; both systems run in
+your browser).
+
+![Evolve page](docs/img/evolve.png)
+
+| Home | Genome lab | Python vs JS |
+|------|------------|--------------|
+| ![Home](docs/img/home.png) | ![Genome lab](docs/img/lab.png) | ![Verify](docs/img/verify.png) |
+
+- **Evolve**: run either system generation by generation, see the whole scored population, best and mean score per
+  generation, each individual's genome and fitness terms; export PNGs.
+- **Genome lab**: edit, mutate and cross over a basic genome; trace one enhanced render (expressions, blends, tint,
+  style effect, score terms).
+- **Python vs JS**: the JavaScript port replays seeded reference runs of this package and shows the differences
+  (bit-identical random streams and genomes; pixels and scores within floating-point rounding).
+
+### Run the web app
+
+```bash
+pip install -r requirements-web.txt
+python run_web.py            # http://127.0.0.1:8158
+```
+
+The local app also runs the Python package itself (Python vs JS page). Tests: `python -m pytest -q tests/
+test_evolutionary_art.py` (includes the node tests of the JS port). Build the static site with
+`python scripts/build_static.py`; it is published by `.github/workflows/pages.yml` on every push to `main`
+(one-time setup: Settings -> Pages -> Source: GitHub Actions).
+
 ## Technical Details
 
 ### Basic System Architecture

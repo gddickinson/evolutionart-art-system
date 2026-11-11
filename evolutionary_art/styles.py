@@ -45,25 +45,25 @@ class EnhancedArtisticFunction:
         self.intent = intent
         self.functions = self._build_function_set()
 
+    # Function names every individual starts with, then those added per style and per mood.
+    BASE_FUNCTIONS = ["sin", "cos", "wave"]
+    STYLE_FUNCTIONS = {
+        "geometric": ["abs", "sin", "cos"],
+        "organic": ["sigmoid", "smooth_abs", "flow"],
+        "fluid": ["flow", "wave", "turbulence"],
+        "structured": ["sin", "cos", "abs"],
+    }
+    MOOD_FUNCTIONS = {
+        "energetic": ["turbulence", "wave"],
+        "calm": ["smooth_abs", "flow"],
+        "mysterious": ["flow", "wave"],
+        "harmonious": ["sin", "cos"],
+    }
+
     def _build_function_set(self):
-        funcs = ["sin", "cos", "wave"]
-
-        style_map = {
-            "geometric": ["abs", "sin", "cos"],
-            "organic": ["sigmoid", "smooth_abs", "flow"],
-            "fluid": ["flow", "wave", "turbulence"],
-            "structured": ["sin", "cos", "abs"],
-        }
-        funcs.extend(style_map.get(self.intent.style, []))
-
-        mood_map = {
-            "energetic": ["turbulence", "wave"],
-            "calm": ["smooth_abs", "flow"],
-            "mysterious": ["flow", "wave"],
-            "harmonious": ["sin", "cos"],
-        }
-        funcs.extend(mood_map.get(self.intent.mood, []))
-
+        funcs = list(self.BASE_FUNCTIONS)
+        funcs.extend(self.STYLE_FUNCTIONS.get(self.intent.style, []))
+        funcs.extend(self.MOOD_FUNCTIONS.get(self.intent.mood, []))
         return sorted(set(funcs))  # sorted: set order varies between runs
 
     # --- math operations ---

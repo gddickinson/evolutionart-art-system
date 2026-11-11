@@ -127,21 +127,15 @@ class EvolutionaryArtSystem:
 
     def evaluate_individual(self, individual):
         """Evaluate fitness of an individual (list of 3 ArtisticFunctions)."""
-        img = np.zeros((self.height, self.width, 3))
-        x = np.linspace(-1, 1, self.width)
-        y = np.linspace(-1, 1, self.height)
-        X, Y = np.meshgrid(x, y)
+        try:
+            img = render_individual(individual, self.width, self.height)
+        except Exception:
+            return (0,)
+        parts = self.fitness_components(img)
+        return (parts["fitness"],)
 
-        for i, func in enumerate(individual):
-            try:
-                result = eval_function(func.function_str, X, Y)
-                result = (result - np.min(result)) / (
-                    np.max(result) - np.min(result) + 1e-10
-                )
-                img[:, :, i] = result
-            except Exception:
-                return (0,)
-
+    def fitness_components(self, img):
+        """Complexity, balance and colour-harmony terms and their weighted sum."""
         complexity = np.std(img)
         balance = 1 - abs(
             np.mean(img[:, : self.width // 2]) - np.mean(img[:, self.width // 2 :])
@@ -149,7 +143,8 @@ class EvolutionaryArtSystem:
         color_harmony = evaluate_color_harmony(img, self.color_palettes)
 
         fitness = complexity * 0.3 + balance * 0.3 + color_harmony * 0.4
-        return (fitness,)
+        return {"complexity": complexity, "balance": balance,
+                "color_harmony": color_harmony, "fitness": fitness}
 
     def crossover(self, ind1, ind2):
         for i in range(len(ind1)):
@@ -166,8 +161,8 @@ class EvolutionaryArtSystem:
                 func.mutate()
         return (individual,)
 
-    def evolve_art(self, output_dir="evolution_output"):
-        os.makedirs(output_dir, exist_ok=True)
+    def evolve_steps(self):
+        """Run the GA, yielding (generation, population, best individual) after each generation."""
         self.initialize_population()
 
         if not hasattr(creator, "FitnessMax"):
@@ -188,7 +183,6 @@ class EvolutionaryArtSystem:
             population.append(ind)
 
         for gen in range(self.generations):
-            print(f"\nGeneration {gen}")
             offspring = toolbox.select(population, len(population))
             # Deep copies: selection returns the same individual several times, and
             # crossover/mutation must not change genes shared with other offspring.
@@ -211,8 +205,16 @@ class EvolutionaryArtSystem:
 
             population[:] = offspring
             valid_individuals = [ind for ind in population if ind.fitness.valid]
+            best_ind = None
             if valid_individuals:
                 best_ind = max(valid_individuals, key=lambda x: x.fitness.values[0])
+            yield gen, population, best_ind
+
+    def evolve_art(self, output_dir="evolution_output"):
+        os.makedirs(output_dir, exist_ok=True)
+        for gen, _population, best_ind in self.evolve_steps():
+            print(f"\nGeneration {gen}")
+            if best_ind is not None:
                 print(f"Best Fitness = {best_ind.fitness.values[0]:.3f}")
                 save_artwork(
                     best_ind,
@@ -222,8 +224,8 @@ class EvolutionaryArtSystem:
                 )
 
 
-def save_artwork(individual, filename, width=800, height=800):
-    """Render an individual to an image file."""
+def render_individual(individual, width=800, height=800):
+    """Render an individual (3 ArtisticFunctions -> R, G, B) to a float image in [0, 1]."""
     img = np.zeros((height, width, 3))
     x = np.linspace(-1, 1, width)
     y = np.linspace(-1, 1, height)
@@ -233,6 +235,10 @@ def save_artwork(individual, filename, width=800, height=800):
         result = eval_function(func.function_str, X, Y)
         result = (result - np.min(result)) / (np.max(result) - np.min(result) + 1e-10)
         img[:, :, i] = result
+    return img
 
-    img = (img * 255).astype(np.uint8)
+
+def save_artwork(individual, filename, width=800, height=800):
+    """Render an individual to an image file."""
+    img = (render_individual(individual, width, height) * 255).astype(np.uint8)
     Image.fromarray(img).save(filename)

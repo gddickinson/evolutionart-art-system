@@ -181,9 +181,15 @@ class EnhancedEvolutionaryArt:
         aesthetic_score *= random.uniform(0.95, 1.05)
         return aesthetic_score
 
-    def evolve(self, output_dir="evolution_output"):
-        """Run the evolutionary loop."""
-        os.makedirs(output_dir, exist_ok=True)
+    # Function names a mutated crossover child may gain.
+    EXTRA_FUNCTIONS = ["sin", "cos", "wave", "flow", "turbulence"]
+
+    def evolve_steps(self):
+        """Run the evolutionary loop, yielding one dict per generation.
+
+        Keys: generation, artworks, scores, best_idx, mutation_rate, population (the
+        individuals that were scored). The next population is bred before yielding.
+        """
         population = [
             EnhancedArtisticFunction(self.intent)
             for _ in range(self.population_size)
@@ -225,9 +231,8 @@ class EnhancedEvolutionaryArt:
                     )
 
                     if random.random() < mutation_rate:
-                        extra_funcs = ["sin", "cos", "wave", "flow", "turbulence"]
                         child.functions.extend(
-                            random.sample(extra_funcs, k=random.randint(1, 3))
+                            random.sample(self.EXTRA_FUNCTIONS, k=random.randint(1, 3))
                         )
 
                     new_population.append(child)
@@ -239,12 +244,22 @@ class EnhancedEvolutionaryArt:
                 EnhancedArtisticFunction(self.intent) for _ in range(num_new)
             ]
 
+            scored = population
             population = new_population
+            yield {
+                "generation": generation, "artworks": artworks, "scores": scores,
+                "best_idx": int(np.argmax(scores)), "mutation_rate": mutation_rate,
+                "population": scored,
+            }
 
-            best_idx = np.argmax(scores)
-            best_artwork = artworks[best_idx]
+    def evolve(self, output_dir="evolution_output"):
+        """Run the evolutionary loop, saving each generation's best artwork."""
+        os.makedirs(output_dir, exist_ok=True)
+        for step in self.evolve_steps():
+            best_idx = step["best_idx"]
+            best_artwork = step["artworks"][best_idx]
             Image.fromarray((best_artwork * 255).astype(np.uint8)).save(
-                os.path.join(output_dir, f"generation_{generation}.png")
+                os.path.join(output_dir, f"generation_{step['generation']}.png")
             )
-            print(f"Generation {generation}: Best Score = {scores[best_idx]:.3f}")
-            print(f"Mutation Rate: {mutation_rate:.2f}")
+            print(f"Generation {step['generation']}: Best Score = {step['scores'][best_idx]:.3f}")
+            print(f"Mutation Rate: {step['mutation_rate']:.2f}")

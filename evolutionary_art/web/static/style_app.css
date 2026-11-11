@@ -1,0 +1,58 @@
+/* Evolutionary Art accent palette (magenta / amber / cyan) and page styles. Shared theme: style.css. */
+:root { --accent:#ff4fd8; --accent2:#ffb13d; --accent3:#3de0ff; --glow:rgba(255,79,216,.14); }
+button, .btn { color:#1d0218; }
+.seg button.on { color:#1d0218; }
+canvas { image-rendering:auto; }
+code { overflow-wrap:anywhere; }
+.sw { display:inline-block; width:16px; height:16px; border-radius:3px; border:1px solid #444; margin:0 3px -3px 0; }
+.key { display:inline-block; width:14px; height:3px; margin:0 4px 3px 8px; vertical-align:middle; }
+.key.a { background:var(--accent); } .key.c { background:var(--accent3); }
+.door.a { border-top:2px solid var(--accent); } .door.b { border-top:2px solid var(--accent2); } .door.c { border-top:2px solid var(--accent3); }
+
+/* home */
+.hero-art { display:grid; grid-template-columns:repeat(5, 1fr); gap:10px; margin-top:8px; }
+.hero-cell { display:block; color:var(--mute); font:12px var(--mono); }
+.hero-cell canvas { width:100%; aspect-ratio:1; display:block; border-radius:6px; border:1px solid var(--line); box-shadow:0 0 22px var(--glow); }
+.hero-cell:hover canvas { border-color:var(--accent); }
+.examples { display:grid; grid-template-columns:repeat(auto-fill, minmax(160px, 1fr)); gap:12px; }
+.examples figure, .pairs figure { margin:0; } .examples img { width:100%; height:auto; border-radius:6px; border:1px solid var(--line); display:block; }
+figcaption { font-size:13px; color:var(--mute); }
+
+/* evolve */
+.evo { display:grid; grid-template-columns:270px 1fr; gap:18px; align-items:start; }
+.evo-ctl { margin:0; position:sticky; top:84px; }
+.evo-ctl .seg { width:100%; } .evo-ctl .seg button { flex:1; }
+.row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.btns { display:flex; flex-wrap:wrap; gap:6px; } .btns button { margin:8px 0 0; }
+.aim { margin-top:12px; border-top:1px solid var(--line); }
+.stage-row { display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1fr); gap:18px; align-items:start; }
+.big { margin:0; } .big canvas { width:100%; aspect-ratio:1; display:block; border-radius:8px; border:1px solid var(--line); background:#000; box-shadow:0 0 40px var(--glow); }
+.tiles.mini { margin:0 0 10px; grid-template-columns:repeat(3, 1fr); } .tiles.mini .tile b { font-size:20px; }
+.hist { width:100%; height:130px; display:block; }
+.genome code.expr, #lab-x-out code.expr, .lab code.expr { display:block; margin:4px 0; padding:4px 8px; background:rgba(3,5,10,.9); border:1px solid var(--line); border-radius:4px; }
+.pop { display:grid; grid-template-columns:repeat(auto-fill, minmax(92px, 1fr)); gap:8px; }
+.pop .cell { margin:0; padding:3px; background:transparent; box-shadow:inset 0 0 0 1px var(--line); color:var(--mute); text-transform:none; letter-spacing:0; font:11px var(--mono); }
+.pop .cell canvas { width:100%; aspect-ratio:1; display:block; border-radius:3px; }
+.pop .cell.best { box-shadow:inset 0 0 0 2px var(--accent2); color:var(--accent2); }
+.pop .cell.sel { box-shadow:inset 0 0 0 2px var(--accent); color:var(--accent); }
+
+/* lab */
+.lab { display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1fr); gap:18px; align-items:start; }
+.lab .panel { margin:0; }
+.lab-big { width:100%; max-width:420px; aspect-ratio:1; display:block; border-radius:8px; border:1px solid var(--line); background:#000; }
+.chans { display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; max-width:420px; margin-top:8px; }
+.chans figure { margin:0; } .chans canvas { width:100%; aspect-ratio:1; display:block; border-radius:4px; }
+.ftable td, .ftable th { padding:4px 10px; } .trace li { margin:4px 0; }
+
+/* verify */
+.pairs { display:grid; grid-template-columns:repeat(auto-fill, minmax(240px, 1fr)); gap:14px; }
+.pairs figure { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+.pairs figure canvas, .pairs figure img { width:100%; aspect-ratio:1; height:auto; display:block; border-radius:4px; image-rendering:pixelated; }
+.pairs figcaption { grid-column:1 / -1; }
+
+@media (max-width:900px) {
+  .evo, .lab { grid-template-columns:1fr; } .evo-ctl { position:static; }
+}
+@media (max-width:640px) {
+  .stage-row { grid-template-columns:1fr; } .hero-art { grid-template-columns:repeat(3, 1fr); }
+}
