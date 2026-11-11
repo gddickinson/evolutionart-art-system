@@ -4,9 +4,11 @@ This repository contains two evolutionary art generation systems that explore di
 
 ## Overview
 
-The repository contains two main systems:
-1. Basic Evolutionary Art System (`evolutionary-art.py`)
-2. Enhanced Art System (`enhanced-art-system.py`)
+The `evolutionary_art` package contains two systems:
+1. Basic Evolutionary Art System (`EvolutionaryArtSystem` in `evolutionary_art/core.py`)
+2. Enhanced Art System (`EnhancedEvolutionaryArt` in `evolutionary_art/rendering.py`)
+
+The original single-file scripts they were refactored from are kept in `_archive/`.
 
 Both systems demonstrate different approaches to computational creativity, with the enhanced system building upon the foundations of the basic system to create more diverse and dramatic results.
 
@@ -16,7 +18,6 @@ Both systems demonstrate different approaches to computational creativity, with 
 - Generates art using mathematical functions and color theory
 - Uses genetic algorithms to evolve artistic patterns
 - Implements basic aesthetic measures
-- Creates MIDI-like smooth transitions between generations
 - Focuses on mathematical patterns and color harmony
 
 ### Enhanced Art System
@@ -37,22 +38,29 @@ Both systems demonstrate different approaches to computational creativity, with 
 
 ### Required Libraries
 ```bash
-pip install numpy Pillow deap matplotlib scipy opencv-python
+pip install -r requirements.txt
 ```
+(numpy, Pillow, deap and opencv-python are used; without OpenCV the enhanced system skips its style effects.)
 
 ## Usage
 
+### Command line
+```bash
+python -m evolutionary_art --mode enhanced --style geometric --mood calm --generations 50 --size 800 --seed 1
+python -m evolutionary_art --mode basic --generations 50 --output-dir evolution_output
+```
+
 ### Basic System
 ```python
-# Create and run the basic evolutionary art system
-art_system = EvolutionaryArt(width=800, height=800)
-art_system.evolve()
+from evolutionary_art import EvolutionaryArtSystem
+art_system = EvolutionaryArtSystem(width=800, height=800, seed=1)
+art_system.evolve_art()
 ```
 
 ### Enhanced System
 ```python
-# Create and run the enhanced art system
-art_system = EnhancedEvolutionaryArt(width=800, height=800)
+from evolutionary_art import EnhancedEvolutionaryArt
+art_system = EnhancedEvolutionaryArt(width=800, height=800, seed=1, mood="calm", style="fluid")
 art_system.evolve()
 ```
 
@@ -140,7 +148,6 @@ for layer in layers[1:]:
 - Focuses on mathematical beauty
 - Explores pattern emergence
 - Uses color theory principles
-- Creates smooth evolutionary transitions
 
 ### Enhanced System
 - Incorporates artistic intent
