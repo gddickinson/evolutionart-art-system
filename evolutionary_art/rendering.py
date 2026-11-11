@@ -220,7 +220,7 @@ class EnhancedEvolutionaryArt:
                         parents.append(population[parent_idx])
 
                     child = EnhancedArtisticFunction(self.intent)
-                    child.functions = list(
+                    child.functions = sorted(
                         set(parents[0].functions + parents[1].functions)
                     )
 

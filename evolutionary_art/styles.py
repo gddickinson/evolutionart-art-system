@@ -64,7 +64,7 @@ class EnhancedArtisticFunction:
         }
         funcs.extend(mood_map.get(self.intent.mood, []))
 
-        return list(set(funcs))
+        return sorted(set(funcs))  # sorted: set order varies between runs
 
     # --- math operations ---
 

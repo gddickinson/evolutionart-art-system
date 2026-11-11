@@ -53,3 +53,21 @@ def test_enhanced_every_style_renders():
         img = art.create_artwork([EnhancedArtisticFunction(art.intent)])
         assert img.shape == (24, 24, 3) and np.isfinite(img).all() and 0 <= img.min() <= img.max() <= 1
         assert np.isfinite(art.evaluate_aesthetics(img))
+
+
+def test_enhanced_seed_is_reproducible_across_processes():
+    """Function sets were built with list(set(...)), whose order depends on Python's per-process string hashing, so
+    --seed gave different art in every run. Two processes with different hash seeds must now agree."""
+    import os
+    import subprocess
+    code = ("import numpy as np, hashlib\n"
+            "from evolutionary_art.rendering import EnhancedEvolutionaryArt\n"
+            "from evolutionary_art.styles import EnhancedArtisticFunction\n"
+            "a = EnhancedEvolutionaryArt(width=16, height=16, seed=3, style='fluid', mood='calm')\n"
+            "f = EnhancedArtisticFunction(a.intent)\n"
+            "print(f.functions, hashlib.md5(a.create_artwork([f]).tobytes()).hexdigest())\n")
+    outs = set()
+    for hs in ("1", "2", "3"):
+        env = dict(os.environ, PYTHONHASHSEED=hs, PYTHONPATH=str(ROOT))
+        outs.add(subprocess.run([sys.executable, "-c", code], env=env, capture_output=True, text=True, check=True).stdout)
+    assert len(outs) == 1, outs
