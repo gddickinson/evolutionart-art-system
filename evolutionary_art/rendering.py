@@ -121,9 +121,8 @@ class EnhancedEvolutionaryArt:
 
         if self.intent.style == "geometric":
             edges = cv2.Canny((img * 255).astype(np.uint8), 100, 200)
-            img = cv2.addWeighted(
-                img, 0.7, edges.reshape(self.height, self.width, 1) / 255, 0.3, 0
-            )
+            # Overlay the (single-channel) edge map on every colour channel.
+            img = img * 0.7 + (edges[:, :, np.newaxis] / 255) * 0.3
         elif self.intent.style == "fluid":
             img = cv2.GaussianBlur(img, (15, 15), 0)
             img = cv2.addWeighted(

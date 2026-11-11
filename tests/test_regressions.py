@@ -39,3 +39,17 @@ def test_basic_offspring_do_not_share_genes(monkeypatch, tmp_path):
         system.evolve_art(output_dir=str(tmp_path))
         stale += sum(abs(ind.fitness.values[0] - system.evaluate_individual(ind)[0]) > 1e-12 for ind in saved)
     assert stale == 0
+
+
+def test_enhanced_every_style_renders():
+    """The geometric style blended a 3-channel image with a 1-channel edge map via cv2.addWeighted, which raises."""
+    import pytest
+    from evolutionary_art.rendering import HAS_CV2, EnhancedEvolutionaryArt
+    from evolutionary_art.styles import ArtisticIntent, EnhancedArtisticFunction
+    if not HAS_CV2:
+        pytest.skip("style effects need OpenCV")
+    for style in ArtisticIntent.STYLES:
+        art = EnhancedEvolutionaryArt(width=24, height=24, seed=0, style=style, mood="calm")
+        img = art.create_artwork([EnhancedArtisticFunction(art.intent)])
+        assert img.shape == (24, 24, 3) and np.isfinite(img).all() and 0 <= img.min() <= img.max() <= 1
+        assert np.isfinite(art.evaluate_aesthetics(img))
