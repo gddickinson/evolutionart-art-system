@@ -9,6 +9,7 @@ import numpy as np
 from PIL import Image
 import random
 import colorsys
+import copy
 import os
 from deap import base, creator, tools
 
@@ -189,7 +190,9 @@ class EvolutionaryArtSystem:
         for gen in range(self.generations):
             print(f"\nGeneration {gen}")
             offspring = toolbox.select(population, len(population))
-            offspring = list(map(creator.Individual, offspring))
+            # Deep copies: selection returns the same individual several times, and
+            # crossover/mutation must not change genes shared with other offspring.
+            offspring = [copy.deepcopy(ind) for ind in offspring]
 
             for child1, child2 in zip(offspring[::2], offspring[1::2]):
                 if random.random() < 0.7:

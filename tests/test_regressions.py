@@ -23,3 +23,19 @@ def test_basic_fitness_scores_sin_cos_expressions():
     system.initialize_population()
     scores = [system.evaluate_individual(ind)[0] for ind in system.artistic_functions]
     assert all(np.isfinite(scores)) and min(scores) > 0
+
+
+def test_basic_offspring_do_not_share_genes(monkeypatch, tmp_path):
+    """Offspring were shallow copies sharing ArtisticFunction objects, so mutating one child silently changed others
+    whose stored fitness then no longer matched their genes (the 'best' image was saved with a stale score)."""
+    import evolutionary_art.core as core
+    saved = []
+    monkeypatch.setattr(core, "save_artwork", lambda ind, *a, **k: saved.append(ind))
+    stale = 0
+    for seed in range(4):
+        system = core.EvolutionaryArtSystem(width=16, height=16, seed=seed)
+        system.generations = 8
+        saved.clear()
+        system.evolve_art(output_dir=str(tmp_path))
+        stale += sum(abs(ind.fitness.values[0] - system.evaluate_individual(ind)[0]) > 1e-12 for ind in saved)
+    assert stale == 0
