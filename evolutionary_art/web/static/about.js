@@ -16,7 +16,7 @@ route('about', async () => {
   <b>Fitness:</b> 0.3 × complexity (standard deviation of the image) + 0.3 × left-right balance + 0.4 × colour harmony
   (how close the image comes to each colour of five random three-colour palettes).
   <b>Evolution</b> (DEAP): 20 individuals; tournament selection of size 3; crossover with probability 0.7 swaps each
-  channel's expression with probability 1/2; mutation with probability 0.2 (then 0.2 per channel) either draws a new
+  channel's expression with probability 1/2; mutation with probability 0.2 (then 0.2 per channel) either draws a different
   expression or scales coefficients by 0.5 to 1.5. The best individual of each generation is saved.</p>
 
   <h2>Enhanced system</h2>

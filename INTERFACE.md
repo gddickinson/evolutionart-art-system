@@ -6,7 +6,7 @@
 |------|---------|-----------|
 | `__init__.py` | Package exports | ArtisticFunction, EvolutionaryArtSystem, ArtisticIntent, EnhancedArtisticFunction, EnhancedEvolutionaryArt |
 | `__main__.py` | Enables `python -m evolutionary_art` | -- |
-| `core.py` | Basic system: expression genomes, colour palettes, DEAP GA | `ArtisticFunction` (generate/mutate), `eval_function()`, `EXPRESSION_NAMES`, `generate_color_palettes()`, `EvolutionaryArtSystem` (`initialize_population`, `evaluate_individual`, `fitness_components`, `crossover`, `mutate_individual`, `evolve_steps()` generator, `evolve_art()`), `render_individual()`, `save_artwork()` |
+| `core.py` | Basic system: expression genomes, colour palettes, DEAP GA | `ArtisticFunction` (generate/mutate), `COEFFICIENT`, `eval_function()`, `EXPRESSION_NAMES`, `generate_color_palettes()`, `EvolutionaryArtSystem` (`initialize_population`, `evaluate_individual`, `fitness_components`, `crossover`, `mutate_individual`, `evolve_steps()` generator, `evolve_art()`), `render_individual()`, `save_artwork()` |
 | `fitness.py` | Aesthetic scoring | `evaluate_color_harmony()`, `evaluate_complexity()`, `evaluate_balance()`, `evaluate_composition_thirds()` |
 | `styles.py` | Intent and function sets | `ArtisticIntent` (MOODS, STYLES, colour theme), `EnhancedArtisticFunction` (BASE_FUNCTIONS, STYLE_FUNCTIONS, MOOD_FUNCTIONS, math ops, `generate_expression()`) |
 | `rendering.py` | Enhanced system | `EnhancedEvolutionaryArt` (BASE_COLORS, EXTRA_FUNCTIONS, `create_artwork`, `_apply_style_effects` (OpenCV), `evaluate_aesthetics`, `evolve_steps()` generator, `evolve()`) |

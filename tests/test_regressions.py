@@ -71,3 +71,27 @@ def test_enhanced_seed_is_reproducible_across_processes():
         env = dict(os.environ, PYTHONHASHSEED=hs, PYTHONPATH=str(ROOT))
         outs.add(subprocess.run([sys.executable, "-c", code], env=env, capture_output=True, text=True, check=True).stdout)
     assert len(outs) == 1, outs
+
+
+def test_basic_mutation_always_changes_genome():
+    """mutate() only touched coefficients its '*'-split happened to isolate, so about half the calls changed nothing."""
+    import random
+    import re
+    coef = re.compile(r"-?\d+(?:\.\d+)?(?:e[+-]?\d+)?")
+    unchanged = scaled = 0
+    for seed in range(300):
+        random.seed(seed)
+        func = ArtisticFunction()
+        before = func.function_str
+        random.seed(10_000 + seed)
+        regenerate = random.random() < 0.3  # mutate()'s first draw picks the branch
+        random.seed(10_000 + seed)
+        func.mutate()
+        unchanged += func.function_str == before
+        if not regenerate:
+            scaled += 1  # coefficient branch: same structure, only numbers changed
+            assert coef.sub("N", func.function_str) == coef.sub("N", before)
+            new, old = coef.findall(func.function_str), coef.findall(before)
+            assert all(0.5 <= float(a) / float(b) <= 1.5 for a, b in zip(new, old) if a != b)
+    assert unchanged == 0
+    assert scaled > 150

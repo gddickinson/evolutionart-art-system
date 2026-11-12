@@ -11,9 +11,13 @@ import random
 import colorsys
 import copy
 import os
+import re
 from deap import base, creator, tools
 
 from evolutionary_art.fitness import evaluate_color_harmony
+
+# A numeric literal in an expression (repr of a float, e.g. -1.25 or 3.5e-05).
+COEFFICIENT = re.compile(r"-?\d+(?:\.\d+)?(?:e[+-]?\d+)?")
 
 # Names an ArtisticFunction expression may use (see _generate_subfunction).
 EXPRESSION_NAMES = {"sin": np.sin, "cos": np.cos, "abs": np.abs}
@@ -54,20 +58,30 @@ class ArtisticFunction:
             return f"({left} {op} {right})"
 
     def mutate(self):
+        """Change the expression: 30% a new random expression, otherwise scale
+        coefficients by U(0.5, 1.5) (each with probability 0.3, at least one)."""
         if random.random() < 0.3:
+            new = self.generate_random_function()
+            while new == self.function_str:
+                new = self.generate_random_function()
+            self.function_str = new
+            return
+        matches = list(COEFFICIENT.finditer(self.function_str))
+        if not matches:
             self.function_str = self.generate_random_function()
-        else:
-            parts = self.function_str.split("*")
-            for i, part in enumerate(parts):
-                if random.random() < 0.3 and "." in part:
-                    try:
-                        num = float(part.split()[0].strip("() "))
-                        new_num = num * random.uniform(0.5, 1.5)
-                        self.function_str = self.function_str.replace(
-                            str(num), str(new_num)
-                        )
-                    except (ValueError, IndexError):
-                        pass
+            return
+        chosen = [m for m in matches if random.random() < 0.3]
+        if not chosen:
+            chosen = [random.choice(matches)]
+        pieces, last = [], 0
+        for m in chosen:
+            num = float(m.group())
+            new_num = num * random.uniform(0.5, 1.5)
+            if new_num == num:
+                new_num = random.uniform(-2, 2)
+            pieces += [self.function_str[last:m.start()], repr(new_num)]
+            last = m.end()
+        self.function_str = "".join(pieces) + self.function_str[last:]
 
 
 def generate_color_palettes(n=5):

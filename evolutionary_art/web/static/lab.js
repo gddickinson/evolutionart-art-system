@@ -23,7 +23,7 @@ route('lab', () => {
   <p>A basic individual is three <code>ArtisticFunction</code> expressions in <code>x</code> and <code>y</code> (each from
   -1 to 1 across the image), built from <code>+</code>, <code>*</code>, <code>sin</code> and <code>cos</code> to a depth
   of 2 to 4. Each is normalised to 0..1 and becomes the red, green or blue channel. Edit them, or let the operators
-  change them: <b>mutate</b> redraws an expression (30%) or scales some of its coefficients by 0.5 to 1.5;
+  change them: <b>mutate</b> draws a different expression (30%) or scales coefficients by 0.5 to 1.5 (each with probability 0.3, at least one);
   <b>crossover</b> swaps each channel with a partner's with probability 1/2.</p>
   <div class="lab">
     <div class="panel">

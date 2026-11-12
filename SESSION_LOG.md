@@ -27,7 +27,13 @@ Docs: README usage named a non-existent `EvolutionaryArt` class and claimed "MID
 `.gitignore` added (INTERFACE.md said one existed); `.DS_Store` files untracked.
 
 **Open for George:** `evolution_output/` (50 PNGs, ~28 MB) is committed; the site uses four 240 px thumbnails.
-Whether to keep it in git is your call. The basic `mutate()` only perturbs coefficients that its string split happens
-to isolate (about half the time nothing changes); ported as is, not "fixed".
+Whether to keep it in git is your call.
 
 **Tests:** `python -m pytest -q tests/ test_evolutionary_art.py` (30 passed, includes 4 node test files).
+
+## 2026-11-11 (later) -- follow-up fixes requested by George
+
+5. Basic `ArtisticFunction.mutate()` changed nothing in about half its calls (it only scaled coefficients its
+   `split("*")` happened to isolate, and `str.replace` could hit every copy of a number). Now: 30% a *different*
+   random expression, otherwise each coefficient is scaled by U(0.5, 1.5) with probability 0.3, at least one, edited
+   in place by position. Same change in `basic_engine.js`; fixture regenerated; regression test added.

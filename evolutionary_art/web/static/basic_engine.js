@@ -24,23 +24,30 @@ function subfunction(py, depth) {
   return `(${left} ${op} ${right})`;
 }
 
-const pyStrip = (s, chars) => { let a = 0, b = s.length; while (a < b && chars.includes(s[a])) a++; while (b > a && chars.includes(s[b - 1])) b--; return s.slice(a, b); };
+// core.COEFFICIENT: a numeric literal in an expression.
+const COEFFICIENT = /-?\d+(?:\.\d+)?(?:e[+-]?\d+)?/g;
 
-// ArtisticFunction.mutate: 30% a new expression, else scale some coefficients by U(0.5, 1.5) via the same string edits.
+// ArtisticFunction.mutate: 30% a different random expression, else scale coefficients by U(0.5, 1.5)
+// (each with probability 0.3, at least one). Always changes the expression.
 export function mutateFunction(py, src) {
-  if (py.random() < 0.3) return generateFunction(py);
-  let out = src;
-  for (const part of src.split('*')) {
-    if (py.random() < 0.3 && part.includes('.')) {
-      const words = part.trim().split(/\s+/).filter(Boolean);
-      if (!words.length) continue;
-      const num = pyFloatParse(pyStrip(words[0], '() '));
-      if (Number.isNaN(num)) continue;
-      const nn = num * py.uniform(0.5, 1.5);
-      out = out.split(pyFloatStr(num)).join(pyFloatStr(nn));
-    }
+  if (py.random() < 0.3) {
+    let next = generateFunction(py);
+    while (next === src) next = generateFunction(py);
+    return next;
   }
-  return out;
+  const matches = [...src.matchAll(COEFFICIENT)];
+  if (!matches.length) return generateFunction(py);
+  let chosen = matches.filter(() => py.random() < 0.3);
+  if (!chosen.length) chosen = [py.choice(matches)];
+  let out = '', last = 0;
+  for (const m of chosen) {
+    const num = pyFloatParse(m[0]);
+    let nn = num * py.uniform(0.5, 1.5);
+    if (nn === num) nn = py.uniform(-2, 2);
+    out += src.slice(last, m.index) + pyFloatStr(nn);
+    last = m.index + m[0].length;
+  }
+  return out + src.slice(last);
 }
 
 // core.generate_color_palettes: n palettes of 3 neighbouring hues, RGB 0-255.
