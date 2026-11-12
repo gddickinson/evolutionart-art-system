@@ -1,7 +1,8 @@
 """Write small JPEG thumbnails of a few saved generations in evolution_output/ for the web site's home page.
 
     python scripts/make_example_thumbs.py
-The originals (800x800 PNG, ~0.6 MB each) stay where they are; the site only ships these ~20 kB copies.
+evolution_output/ is generated locally by a run (python -m evolutionary_art) and is not kept in git; the committed
+thumbnails in evolutionary_art/web/static/img/ come from the run that used to be committed there.
 """
 from pathlib import Path
 

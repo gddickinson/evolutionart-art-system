@@ -54,8 +54,8 @@ route('home', async () => {
   </div>
   <div class="grid wide">${list(DOORS, ([href, t, d, c]) => `<a class="card door ${c}" href="${href}"><b>${t}</b><span>${d}</span></a>`)}</div>
   <h2>From the repository</h2>
-  <p class="small mute">Best images of generations ${examples.map(e => e.generation).join(', ')} of one earlier run, saved in
-  <code>evolution_output/</code> (800 × 800 originals, shown reduced).</p>
+  <p class="small mute">Best images of generations ${examples.map(e => e.generation).join(', ')} of one earlier run
+  (800 × 800 originals, shown reduced). A run writes its images to <code>evolution_output/</code> on your machine.</p>
   <div class="examples">${list(examples, e => `<figure><img src="${esc(e.src)}" alt="Saved best image of generation ${e.generation}" width="240" height="240" loading="lazy"><figcaption>generation ${e.generation}</figcaption></figure>`)}</div>`;
   let seed = 1 + Math.floor(Math.random() * 1000);
   const host = document.getElementById('hero-art');

@@ -65,7 +65,6 @@ def test_info_counts_come_from_package():
 def test_examples_exist():
     for e in client.get("/api/examples").json():
         assert (STATIC / e["src"].removeprefix("static/")).exists()
-        assert (ROOT / e["original"]).exists()
 
 
 @pytest.mark.parametrize("body", [

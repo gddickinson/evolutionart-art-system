@@ -70,9 +70,9 @@ def options():
 
 @app.get("/api/examples")
 def examples():
-    """Thumbnails of images saved in evolution_output/ (made by scripts/make_example_thumbs.py)."""
-    return [{"generation": g, "src": f"static/img/generation_{g}.jpg", "original": f"evolution_output/generation_{g}.png"}
-            for g in EXAMPLE_GENERATIONS]
+    """Thumbnails of images from an earlier run (made by scripts/make_example_thumbs.py; the run's
+    evolution_output/ folder is generated locally and not kept in git)."""
+    return [{"generation": g, "src": f"static/img/generation_{g}.jpg"} for g in EXAMPLE_GENERATIONS]
 
 
 @lru_cache(maxsize=1)

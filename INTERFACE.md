@@ -45,8 +45,8 @@
 | `scripts/make_js_fixtures.py`, `scripts/make_example_thumbs.py` | Regenerate the JS fixture / home-page thumbnails |
 | `.github/workflows/pages.yml` | Test, build and publish the static site on push to `main` |
 | `requirements.txt`, `requirements-web.txt` | Package dependencies / pinned web app dependencies |
-| `.gitignore` | Ignores site/, __pycache__/, .DS_Store |
-| `evolution_output/` | 50 saved best images (800x800) from an earlier run, kept in git |
+| `.gitignore` | Ignores site/, __pycache__/, .DS_Store, evolution_output/ |
+| `evolution_output/` | Generated locally by a run (best image per generation); not in git |
 
 ## Data Flow
 

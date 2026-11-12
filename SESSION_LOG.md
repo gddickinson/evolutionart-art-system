@@ -26,8 +26,6 @@ in core.py and rendering.py (`evolve_art()` / `evolve()` consume them), `render_
 Docs: README usage named a non-existent `EvolutionaryArt` class and claimed "MIDI-like smooth transitions"; corrected.
 `.gitignore` added (INTERFACE.md said one existed); `.DS_Store` files untracked.
 
-**Open for George:** `evolution_output/` (50 PNGs, ~28 MB) is committed; the site uses four 240 px thumbnails.
-Whether to keep it in git is your call.
 
 **Tests:** `python -m pytest -q tests/ test_evolutionary_art.py` (30 passed, includes 4 node test files).
 
@@ -37,3 +35,6 @@ Whether to keep it in git is your call.
    `split("*")` happened to isolate, and `str.replace` could hit every copy of a number). Now: 30% a *different*
    random expression, otherwise each coefficient is scaled by U(0.5, 1.5) with probability 0.3, at least one, edited
    in place by position. Same change in `basic_engine.js`; fixture regenerated; regression test added.
+6. `evolution_output/` (50 generated PNGs, ~28 MB) removed from git (`git rm --cached`, history not rewritten) and
+   added to `.gitignore`; it is generated locally by a run. The site keeps its four 240 px thumbnails in
+   `evolutionary_art/web/static/img/` (44 kB). `/api/examples` no longer points at the originals.

@@ -65,6 +65,8 @@ art_system.evolve()
 ```
 
 Both systems will create an `evolution_output` directory containing generated artwork from each generation.
+The folder is generated locally by each run and is not kept in git (it is listed in `.gitignore`); the web site's
+home page shows four small thumbnails from an earlier run (`evolutionary_art/web/static/img/`).
 
 ## Web interface and live site
 
